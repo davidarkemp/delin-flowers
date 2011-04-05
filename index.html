@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Flowers</title>
+    <link rel="stylesheet" href="css/flowers.css">
+    <style type="text/css">
+        body { padding:0; margin: 0; }
+        #flower-holder {
+            overflow:hidden;
+            position: relative;
+            padding: 0;
+            margin: 0;
+            background-color: #f0f0f0;
+            list-style: none;
+        }
+
+        #flower-holder li {
+            float: left;
+            border: 1px solid #000;
+            margin: 5px;
+        }
+
+        #flower-holder li.red {
+            background-color: #ff9999;
+        }
+        #flower-holder li.green {
+            background-color: #99ff99;
+        }
+
+        #flower-holder li.blue {
+            background-color: #9999ff;
+        }
+    </style>
+</head>
+<body>
+    <ul id="flower-holder">
+
+
+
+
+    </ul>
+    <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.isotope.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+
+
+            var $flowerHolder = $("#flower-holder");
+
+            for(var i = 0; i < 100; ++i) {
+                var r = Math.random();
+                var $this = $("<li></li>",
+                {
+                    width : (100 + Math.random() * 95) + "px",
+                    height: 100  + Math.random() * 95
+                })
+                .addClass(r < 0.33 ? 'red' : r < 0.66 ? 'green' : 'blue');
+
+
+
+                $flowerHolder.append($this);
+            }
+        })
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+        var $flowerHolder = $("#flower-holder");
+        $flowerHolder
+            .isotope({  })
+            .children()
+                .toggle(function() {
+                    var $this = $(this);
+                    $this.data("size", [$this.width(),$this.height()]);
+                    $(this).css({ width: 400, height: 400 });
+                    $flowerHolder.isotope( 'reLayout');
+
+
+                }, function() {
+                    var $this = $(this);
+                    var size = $this.data("size");
+                    $this.css({ width: size[0], height: size[1] });
+                    $flowerHolder.isotope( 'reLayout');
+
+                });
+        });
+    </script>
+</body>
+</html>
