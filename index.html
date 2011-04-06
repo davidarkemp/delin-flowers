@@ -282,7 +282,13 @@
         $flowerHolder
                 .isotope({ animationEngine: 'jquery' })
                 .children()
-                .toggle(function() {
+                .toggle(showImage, hideImage)
+                .each(function() {
+                    var $this = $(this);
+                    new Image().src = $this.find('a').attr('href');
+                });
+
+        function showImage() {
 
             var $this = $(this);
 
@@ -303,14 +309,15 @@
             image.src = $this.find("a")[0].href;
 
 
-        }, function() {
-            var $this = $(this);
-            var size = $this.data("size");
-            $this.css({ width: size[0], height: size[1] });
-            $this.find("img").attr("src", $this.data("thumbnail"));
-            $flowerHolder.isotope('reLayout');
+        }
 
-        });
+        function hideImage() {
+             var $this = $(this);
+             var size = $this.data("size");
+             $this.css({ width: size[0], height: size[1] });
+             $this.find("img").attr("src", $this.data("thumbnail"));
+             $flowerHolder.isotope('reLayout');
+        }
     });
 </script>
 </body>
