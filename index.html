@@ -6,6 +6,7 @@
     <!--<link rel="stylesheet" href="css/flowers.css">-->
     <style type="text/css">
         body { padding:0; margin: 0; }
+
         #flower-holder {
             overflow:hidden;
             position: relative;
@@ -19,68 +20,89 @@
             float: left;
             border: 1px solid #000;
             margin: 5px;
+            overflow: hidden;
         }
 
-        #flower-holder li.red {
-            background-color: #ff9999;
-        }
-        #flower-holder li.green {
-            background-color: #99ff99;
+        #flower-holder li img {
+            float: left;
+            border : 0;
         }
 
-        #flower-holder li.blue {
-            background-color: #9999ff;
-        }
     </style>
 </head>
 <body>
     <ul id="flower-holder">
+        <li>
+            <a href="assets/2391799205_020a417c3b.jpg">
+                <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg" />
+            </a>
+        </li>
 
+        <li>
+            <a href="assets/2391819253_6882c7fd15.jpg">
+                <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg" />
+            </a>
+        </li>
 
-
+           <li>
+            <a href="assets/2391824483_a02f161141.jpg">
+                <img src="assets/thumbnails/2391824483_a02f161141_t.jpg" />
+            </a>
+        </li>
 
     </ul>
     <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
     <script type="text/javascript" src="js/jquery.isotope.min.js"></script>
+
     <script type="text/javascript">
         $(function() {
-
-
             var $flowerHolder = $("#flower-holder");
+            var $children = $flowerHolder.children();
 
+            var s = "";
             for(var i = 0; i < 100; ++i) {
-                var r = Math.random();
-                var $this = $("<li></li>",
-                {
-                    width : (100 + Math.random() * 95) + "px",
-                    height: 100  + Math.random() * 95
-                })
-                .addClass(r < 0.33 ? 'red' : r < 0.66 ? 'green' : 'blue');
-
-
-
-                $flowerHolder.append($this);
+                var q = Math.floor(Math.random() * $children.length);
+                s += "<li>" + $children.eq(q).html() + "</li>";
             }
-        })
+
+            $(s).appendTo($flowerHolder);
+        });
     </script>
 
     <script type="text/javascript">
         $(function() {
         var $flowerHolder = $("#flower-holder");
         $flowerHolder
-            .isotope({  })
+            .isotope({ animationEngine: 'jquery' })
             .children()
                 .toggle(function() {
+
                     var $this = $(this);
+
+                    var $img = $this.find("img");
                     $this.data("size", [$this.width(),$this.height()]);
-                    $(this).css({ width: 400, height: 400 });
-                    $flowerHolder.isotope( 'reLayout');
+                    $this.data("thumbnail", $img.attr("src"));
+
+                    var image =new Image();
+                    $(image).load(function(){
+
+
+                        $img
+                                .css({ width: '100%', height: '100% '})
+                                .attr("src",image.src);
+
+                        $this.css({ width: image.width, height: image.height });
+                        $flowerHolder.isotope( 'reLayout');
+                    });
+
+                    image.src = $this.find("a")[0].href;
 
 
                 }, function() {
                     var $this = $(this);
                     var size = $this.data("size");
                     $this.css({ width: size[0], height: size[1] });
+                    $this.find("img").attr("src", $this.data("thumbnail"));
                     $flowerHolder.isotope( 'reLayout');
 
                 });
