@@ -12,264 +12,282 @@
 
         #flower-holder {
             overflow: hidden;
-            position: relative;
             padding: 0;
             margin: 0;
             background-color: #f0f0f0;
-            list-style: none;
         }
 
-        #flower-holder li {
-            float: left;
+        #flower-holder div.item {
             border: 1px solid #000;
             margin: 5px;
-            overflow: hidden;
+            width: 100px;
+            height: 75px;
+        }
+        #flower-holder div.item.large {
+            width: 500px;
+            height: 375px;
         }
 
-        #flower-holder li img {
-            float: left;
-            border: 0;
+        #flower-holder div.item.portrait {
+            height: 100px;
+            width: 75px;
         }
 
-        #flower-holder li .caption {
+        #flower-holder div.item.portrait.large {
+            height: 500px;
+            width: 375px;
+        }
+
+        #flower-holder div.item a {
+            display: block;
+        }
+
+        #flower-holder div.item .caption {
             display:none
         }
 
-        #flower-holder li .caption span {
-            display:block
+        #flower-holder div.item.large .caption {
+            display:block;
         }
+        
     </style>
 </head>
 <body>
-<ul id="flower-holder">
-<li>
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-        <span class="caption">
-            <span>martin smell</span>
-            <span>lorem ipsum pro patriai</span>
-        </span>
-    </a>
-</li>
+<div id="flower-holder">
+<div class="item">
+    <a href="assets/2391799205_020a417c3b.jpg"><img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/></a>
+    <div class="caption">
+            <div>lorem ipsum blah blah</div>
+            <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
+    </div>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+    <div class="caption">
+            <div>lorem ipsum blah blah</div>
+            <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
+    </div>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
+    <div class="caption">
+            <div>lorem ipsum blah blah</div>
+            <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
+    </div>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
-<li>
+</div>
+<div class="item">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
-</li>
+</div>
 
-<li>
+<div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
-</li>
+</div>
 
-</ul>
+</div>
 <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
 <script type="text/javascript" src="js/jquery.isotope.min.js"></script>
 
@@ -287,56 +305,6 @@
     }); */
 </script>
 
-<script type="text/javascript">
-    $(function() {
-        var $flowerHolder = $("#flower-holder");
-        $flowerHolder
-                .isotope({
-                    animationEngine: 'jquery',
-                    layoutEngine: 'cellsByColumn',
-                    cellsByRow : {
-                        columnWidth : 100,
-                        rowHeight : 100
-                      }
-                })
-                .children()
-                .toggle(showImage, hideImage)
-                .each(function() {
-                    var $this = $(this);
-                    new Image().src = $this.find('a').attr('href');
-                });
-
-        function showImage() {
-
-            var $this = $(this);
-
-            var $img = $this.find("img");
-            $this.data("size", [$this.width(),$this.height()]);
-            $this.data("thumbnail", $img.attr("src"));
-
-            var image = new Image();
-            $(image).load(function() {
-
-                $img/*.css({ width: '100%', height: '100% '})*/
-                        .attr("src", image.src);
-                var captionHeight = $this.find('.caption').show().height();
-                $this.css({ width: image.width, height: image.height + captionHeight });
-                $flowerHolder.isotope('reLayout');
-            });
-
-            image.src = $this.find("a")[0].href;
-
-
-        }
-
-        function hideImage() {
-             var $this = $(this);
-             var size = $this.data("size");
-             $this.css({ width: size[0], height: size[1] });
-             $this.find("img").attr("src", $this.data("thumbnail"));
-             $flowerHolder.isotope('reLayout');
-        }
-    });
-</script>
+<script type="text/javascript" src="js/flowers.js"></script>
 </body>
 </html>
