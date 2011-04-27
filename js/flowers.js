@@ -4,10 +4,10 @@ $(function() {
             .isotope({
                          animationEngine: 'jquery',
                          layoutMode: 'masonry',
-                         masonry: { columnWidth: 20 },
+                         masonry: { columnWidth: 120 },
                          cellsByRow : {
-                             columnWidth : 200,
-                             rowHeight : 200
+                             columnWidth : 250,
+                             rowHeight : 250
                          }
                      })
             .children()
@@ -33,7 +33,7 @@ $(function() {
 
             $img/*.css({ width: '100%', height: '100% '})*/
                     .attr("src", image.src);
-            var captionHeight = $this.find('.caption').css("display", "block").height();
+            var captionHeight = $this.find('.caption')/*.css("display", "block")*/.height();
             $this.css({ width: image.width, height: image.height + captionHeight });
             $flowerHolder.isotope('reLayout');
         });

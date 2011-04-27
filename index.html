@@ -8,6 +8,11 @@
         body {
             padding: 0;
             margin: 0;
+            font-family: arial, helvetica, sans-serif;
+        }
+
+        body {
+
         }
 
         #flower-holder {
@@ -43,7 +48,8 @@
         }
 
         #flower-holder div.item .caption {
-            display:none
+            display:none;
+            float:left;
         }
 
         #flower-holder div.item.large .caption {
@@ -72,6 +78,36 @@
     </div>
 </div>
 
+<div class="item">
+    <a href="assets/2391799205_020a417c3b.jpg">
+        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
+    </a>
+</div>
+
+<div class="item">
+    <a href="assets/2391819253_6882c7fd15.jpg">
+        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
+    </a>
+</div>
+
+<div class="item portrait">
+    <a href="assets/2391824483_a02f161141.jpg">
+        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
+    </a>
+</div>
+<div class="item">
+    <a href="assets/2391799205_020a417c3b.jpg">
+        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
+    </a>
+</div>
+
+<div class="item">
+    <a href="assets/2391819253_6882c7fd15.jpg">
+        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
+    </a>
+</div>
+
+
 <div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
@@ -80,35 +116,6 @@
             <div>lorem ipsum blah blah</div>
             <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
     </div>
-</div>
-
-<div class="item">
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-    </a>
-</div>
-
-<div class="item">
-    <a href="assets/2391819253_6882c7fd15.jpg">
-        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
-    </a>
-</div>
-
-<div class="item portrait">
-    <a href="assets/2391824483_a02f161141.jpg">
-        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
-    </a>
-</div>
-<div class="item">
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-    </a>
-</div>
-
-<div class="item">
-    <a href="assets/2391819253_6882c7fd15.jpg">
-        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
-    </a>
 </div>
 
 <div class="item portrait">
@@ -289,21 +296,31 @@
 
 </div>
 <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript">
+
+   $(function() {
+       $("#flower-holder").children("div.item").each(function(i){
+           var $this = $(this).css("position", "relative");
+
+           var width = $this.width();
+           var height = $this.height();
+           $("<div>" + i + "</div>")
+                   .css({
+                          width: width + "px",
+                          height: height +" px",
+                          margin: "auto 0 auto 0",
+                          position : "absolute",
+                          top: "0",
+                          "font-size": "75px"})
+                   .animate( { "opacity" : 0.67})
+                   .appendTo($this);
+       });
+   });
+</script>
+
 <script type="text/javascript" src="js/jquery.isotope.min.js"></script>
 
-<script type="text/javascript">
-/*    $(function() {
-        var $flowerHolder = $("#flower-holder");
-        var $children = $flowerHolder.children();
 
-        for (var i = 0; i < 100; ++i) {
-            var q = Math.floor(Math.random() * $children.length);
-            $flowerHolder.append($children.eq(q).clone());
-        }
-
-
-    }); */
-</script>
 
 <script type="text/javascript" src="js/flowers.js"></script>
 </body>
