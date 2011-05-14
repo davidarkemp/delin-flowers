@@ -1,16 +1,10 @@
 $(function() {
+
+
+
     var $flowerHolder = $("#flower-holder");
-    $flowerHolder
-    /*        .isotope({
-                         animationEngine: 'jquery',
-                         layoutMode: 'masonry',
-                         masonry: { columnWidth: 100 },
-                         cellsByRow : {
-                             columnWidth : 250,
-                             rowHeight : 250
-                         }
-                     })*/
-            .children()
+    //$flowerHolder
+    $(".item:has(img)", $flowerHolder)
             .each(function() {
                 var $this = $(this);
                 $this
@@ -37,7 +31,7 @@ $(function() {
         var image = new Image();
         $(image).load(function() {
 
-            $img/*.css({ width: '100%', height: '100% '})*/
+            $img.css({ width: '100%', height: '100% '})
                     .attr("src", image.src);
             var captionHeight = $this.find('.caption')/*.css("display", "block")*/.height();
             $this.animate({ width: image.width, height: image.height + captionHeight },
@@ -55,9 +49,10 @@ $(function() {
 
         var size = $this.data("size");
         console.log("hide",$this,size);
-        $this.animate({ width: size[0], height: size[1] });
-        $this.find("img").attr("src", $this.data("thumbnail"));
+        $this.animate({ width: size[0], height: size[1] }, function() {;
+            $this.find("img").attr("src", $this.data("thumbnail"));
+        })
 //        $flowerHolder.isotope('reLayout');
         return true;
     }
-});
+});         

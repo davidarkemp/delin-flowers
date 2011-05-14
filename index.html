@@ -5,14 +5,19 @@
     <title>Flowers</title>
     <!--<link rel="stylesheet" href="css/flowers.css">-->
     <style type="text/css">
-        body {
+
+
+        html,body {
             padding: 0;
-            margin: 0;
+            margin: 0 0 1px;
+            height: 100%;
             font-family: arial, helvetica, sans-serif;
         }
 
-        body {
+        #content {
             text-align: center;
+            margin: 0 50px;
+            height: 100%;
         }
 
         #flower-holder {
@@ -31,20 +36,11 @@
             height: 75px;
             float:left;
         }
-        #flower-holder div.item.large {
+        #flower-holder div.item .large {
             width: 500px;
             height: 375px;
         }
 
-      /*  #flower-holder div.item.portrait {
-            height: 100px;
-            width: 75px;
-        }
-
-        #flower-holder div.item.portrait.large {
-            height: 500px;
-            width: 375px;
-        } */
 
         #flower-holder div.item a {
             display: block;
@@ -58,10 +54,17 @@
         #flower-holder div.item.large .caption {
             display:block;
         }
+
+        #flower-holder div.item.cta {
+            width: 175px;
+            height: 75px;
+        }
         
     </style>
 </head>
 <body>
+<div id="content">
+<h1>Simple layout using float:left</h1>
 <div id="flower-holder">
 <div class="item">
     <a href="assets/2391799205_020a417c3b.jpg"><img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/></a>
@@ -267,7 +270,9 @@
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
-
+<div class="item cta">
+    You can add any message you want
+</div>
 <div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
@@ -296,13 +301,16 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-
+</div>
+<div id="footer">
+    rah rah rah rah wrecking bar
+</div>
 </div>
 <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
 <script type="text/javascript">
 
    $(function() {
-       $("#flower-holder").children("div.item").each(function(i){
+       $("#flower-holder").children("div.item:has(img)").each(function(i){
            var $this = $(this).css("position", "relative");
 
            var width = $this.width();
@@ -321,10 +329,6 @@
        });
    });
 </script>
-
-<script type="text/javascript" src="js/jquery.isotope.min.js"></script>
-
-
 
 <script type="text/javascript" src="js/flowers.js"></script>
 </body>
