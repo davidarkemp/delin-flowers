@@ -12,28 +12,31 @@
         }
 
         body {
-
+            text-align: center;
         }
 
         #flower-holder {
+            text-align: center;
+
             overflow: hidden;
             padding: 0;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: #00f0f0;
         }
 
         #flower-holder div.item {
             border: 1px solid #000;
-            margin: 5px;
-            width: 100px;
+            margin: 12px 12px 13px 13px;
+            width: 75px;
             height: 75px;
+            float:left;
         }
         #flower-holder div.item.large {
             width: 500px;
             height: 375px;
         }
 
-        #flower-holder div.item.portrait {
+      /*  #flower-holder div.item.portrait {
             height: 100px;
             width: 75px;
         }
@@ -41,7 +44,7 @@
         #flower-holder div.item.portrait.large {
             height: 500px;
             width: 375px;
-        }
+        } */
 
         #flower-holder div.item a {
             display: block;
@@ -308,10 +311,11 @@
                    .css({
                           width: width + "px",
                           height: height +" px",
-                          margin: "auto 0 auto 0",
+                          margin: "12px auto 13px auto",
                           position : "absolute",
+                          "text-align": "center",
                           top: "0",
-                          "font-size": "75px"})
+                          "font-size": "50px"})
                    .animate( { "opacity" : 0.67})
                    .appendTo($this);
        });

@@ -1,31 +1,37 @@
 $(function() {
     var $flowerHolder = $("#flower-holder");
     $flowerHolder
-            .isotope({
+    /*        .isotope({
                          animationEngine: 'jquery',
                          layoutMode: 'masonry',
-                         masonry: { columnWidth: 120 },
+                         masonry: { columnWidth: 100 },
                          cellsByRow : {
                              columnWidth : 250,
                              rowHeight : 250
                          }
-                     })
+                     })*/
             .children()
-            .toggle(showImage, hideImage)
             .each(function() {
-        var $this = $(this);
-        $this.click(function() {
-            $this.toggleClass("large");
-        });
-        new Image().src = $this.find('a').attr('href');
-    });
+                var $this = $(this);
+                $this
+                    .toggle(function() {
+                        showImage.apply($this);
+                        $this.addClass("large");
+                    }, function() {
+                        $this.removeClass("large");
+                        hideImage.apply($this);
+                    });
+                new Image().src = $this.find('a').attr('href');
+            });
 
     function showImage() {
 
         var $this = $(this);
 
         var $img = $this.find("img");
-        $this.data("size", [$this.width(),$this.height()]);
+        var size = [$this.width(),$this.height()];
+        console.log("show",$this,size)
+        $this.data("size", size);
         $this.data("thumbnail", $img.attr("src"));
 
         var image = new Image();
@@ -34,8 +40,8 @@ $(function() {
             $img/*.css({ width: '100%', height: '100% '})*/
                     .attr("src", image.src);
             var captionHeight = $this.find('.caption')/*.css("display", "block")*/.height();
-            $this.css({ width: image.width, height: image.height + captionHeight });
-            $flowerHolder.isotope('reLayout');
+            $this.animate({ width: image.width, height: image.height + captionHeight },
+            function() { /*$flowerHolder.isotope('reLayout');*/ });
         });
 
         image.src = $this.find("a")[0].href;
@@ -44,10 +50,14 @@ $(function() {
     }
 
     function hideImage() {
+        
         var $this = $(this);
+
         var size = $this.data("size");
-        $this.css({ width: size[0], height: size[1] });
+        console.log("hide",$this,size);
+        $this.animate({ width: size[0], height: size[1] });
         $this.find("img").attr("src", $this.data("thumbnail"));
-        $flowerHolder.isotope('reLayout');
+//        $flowerHolder.isotope('reLayout');
+        return true;
     }
 });
