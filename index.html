@@ -57,7 +57,7 @@
 
         #flower-holder div.item.cta {
             width: 175px;
-            height: 75px;
+            height: 175px;
         }
         
     </style>
@@ -225,54 +225,54 @@
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
 </div>
-
-<div class="item portrait">
-    <a href="assets/2391824483_a02f161141.jpg">
-        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
-    </a>
-</div>
-<div class="item">
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-    </a>
-</div>
-
-<div class="item">
-    <a href="assets/2391819253_6882c7fd15.jpg">
-        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
-    </a>
-</div>
-
-<div class="item portrait">
-    <a href="assets/2391824483_a02f161141.jpg">
-        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
-    </a>
-</div>
-<div class="item">
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-    </a>
-</div>
-
-<div class="item">
-    <a href="assets/2391819253_6882c7fd15.jpg">
-        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
-    </a>
-</div>
-
-<div class="item portrait">
-    <a href="assets/2391824483_a02f161141.jpg">
-        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
-    </a>
-</div>
-<div class="item">
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-    </a>
-</div>
 <div class="item cta">
     You can add any message you want
 </div>
+<div class="item portrait">
+    <a href="assets/2391824483_a02f161141.jpg">
+        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
+    </a>
+</div>
+<div class="item">
+    <a href="assets/2391799205_020a417c3b.jpg">
+        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
+    </a>
+</div>
+
+<div class="item">
+    <a href="assets/2391819253_6882c7fd15.jpg">
+        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
+    </a>
+</div>
+
+<div class="item portrait">
+    <a href="assets/2391824483_a02f161141.jpg">
+        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
+    </a>
+</div>
+<div class="item">
+    <a href="assets/2391799205_020a417c3b.jpg">
+        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
+    </a>
+</div>
+
+<div class="item">
+    <a href="assets/2391819253_6882c7fd15.jpg">
+        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
+    </a>
+</div>
+
+<div class="item portrait">
+    <a href="assets/2391824483_a02f161141.jpg">
+        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
+    </a>
+</div>
+<div class="item">
+    <a href="assets/2391799205_020a417c3b.jpg">
+        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
+    </a>
+</div>
+
 <div class="item">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
@@ -311,7 +311,7 @@
 
    $(function() {
        $("#flower-holder").children("div.item:has(img)").each(function(i){
-           var $this = $(this).css("position", "relative");
+           var $this = $(this);//.css("position", "relative");
 
            var width = $this.width();
            var height = $this.height();
