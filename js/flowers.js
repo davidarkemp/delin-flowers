@@ -32,7 +32,7 @@ $(function() {
             return new LayoutItem(item);
         });
         this.layout = layout;
-        return this;
+
 
         function LayoutItem(node) {
             this.$this = $(node).css("position", "absolute");
@@ -42,8 +42,8 @@ $(function() {
             this.left = 0;
         }
 
-        LayoutItem.prototype.itercepts = function(other) {
-            return (between(this.left, other.left, other.right) && bewteen(this.top, other.top, other.bottom))
+        LayoutItem.prototype.intercepts = function(other) {
+            return (between(this.left, other.left, other.right) && between(this.top, other.top, other.bottom))
                     || (between(this.right, other.left, other.right) && between(this.bottom, other.top, other.bottom));
         };
 
@@ -52,11 +52,13 @@ $(function() {
             this.bottom = this.top + this.height;
             this.left = left;
             this.right = this.left + this.width;
-            this.$this.css({ top: this.top + "px", left: this.left + "px" });
+
+            console.log("move to ", this.left, ",", this.top)
+            this.$this.css({ "top": this.top + "px", "left": this.left + "px" });
         }
 
         LayoutItem.prototype.moveBy = function (offset) {
-            var leftOffet = offset.left || 0;
+            var leftOffset = offset.left || 0;
             var topOffset = offset.top || 0;
             this.moveTo(this.left + leftOffset, this.top + topOffset )
         }
@@ -64,50 +66,56 @@ $(function() {
         function layout(){
             var self = this;
             self.maxWidth = self.$container.width();
-            console.log("layout to width ",self.maxWidth)
-            var rowWidth = 0;
-            var rowWidths = [];
-            each(self.items, function(item) {
-                var newWidth = rowWidth + item.width;
-                if(newWidth > self.maxWidth) {
-                    rowWidths.push(rowWidth);
-                    rowWidth = item.width;
-                } else {
-                    rowWidth = newWidth;
-                }
-                item.rowIndex = rowWidths.length;
-            });
-            if(rowWidth>0) { rowWidths.push(rowWidth); }
+
 
             var minItemWidth = min(map(this.items, function(item) { return item.width; }));
             var minItemHeight = min(map(this.items, function(item) { return item.height; }));
 
-            console.log("layout %i rows", rowWidths.length)
-            var maxRowWidth = max(rowWidths);
-            var left = Math.floor((self.maxWidth - maxRowWidth)/2);
+            var previous = [self.items[0]];
+            for(var i = 1; i < self.items.length; ++i) {
+                var currentItem = self.items[i];
+                var currentX = 0, currentY = 0;
+                currentItem.moveTo(currentX, currentY);
+                var interceptor;
 
-            var yPosition = 0, items = self.items;
-            for(var rowIndex = 0, itemsIndex = 0; rowIndex < rowWidths.length; ++rowIndex) {
-                var xPosition = left;
-                var rowPosition = yPosition;
-                for(;itemsIndex < items.length && items[itemsIndex].rowIndex == rowIndex; ++itemsIndex){
-                    items[itemsIndex].$this.css({
-                                position: "absolute",
-                                top:  rowPosition +"px",
-                                left: xPosition +"px"
-                            });
-                    xPosition += items[itemsIndex].width;
-                    yPosition = Math.max(yPosition, rowPosition + items[itemsIndex].height);
+                while( interceptor = first(previous, function(l){ return currentItem.intercepts(l); }) ) {
+                    currentX += interceptor.width;
+
+                    if(currentX + currentItem.width > self.maxWidth) {
+
+                        currentX = 0;
+                        currentY += minItemHeight;
+                    }
+                    currentItem.moveTo(currentX, currentY);
                 }
+                previous.push(currentItem)
             }
+
+            var rightmostPoint = max(map(self.items, function(i) { return i.right }));
+            var leftOffset = Math.floor((this.maxWidth - rightmostPoint) / 2);
+            each(self.items, function(i){ i.moveBy({left:leftOffset}); });
+            var yPosition = max(map(self.items, function(i) { return i.bottom; }));
 
             this.$container.css("height", yPosition)
         }
     }
 
+    function first(array, fn) {
+        var item;
+        try {
+            each(array, function(i){
+                item = i;
+                if(!fn(i)) return;
+                throw i;
+            });
+        } catch(e) {
+            return item;
+        }
+        return null;
+    }
 
     function between(candidate, min, max){
-        return min <= candidate && candidate <= max;
+        return min <= candidate && candidate < max;
     }
     
     function range() {
