@@ -1,19 +1,19 @@
 
 var functional = {
-between : function (candidate, min, max){
+    between : function (candidate, min, max) {
         return min <= candidate && candidate <= max;
     },
 
-first : function (array, fn) {
+    first : function (array, fn) {
         var item;
         try {
-            functional.each(array, function(i){
+            functional.each(array, function(i) {
                 item = i;
-                if(!fn(i)) return;
+                if (!fn(i)) return;
                 throw functional.breakToken;
             });
         } catch(e) {
-            if(e !== functional.breakToken) throw e;
+            if (e !== functional.breakToken) throw e;
             return item;
         }
         return null;
@@ -21,70 +21,70 @@ first : function (array, fn) {
 
     breakToken: {},
 
-    range : function () {
-        var start, count;
-        if(arguments.length == 1) {
-            start = 0; count = arguments[0];
-        } else if ( arguments.length == 2 ) {
-            start = arguments[0]; count = arguments[2];
-        } else {
-            throw "expected 1 or 2 arguments"
-        }
-        var arr = [];
-        for(var i = 0; i < count; ++count) {
-            arr.push(i+start);
-        }
-        return arr;
-    },
-
     min : function (array) {
-        return functional.reduce(array, function(min,current) { return Math.min(min||current, current); });
+        return functional.reduce(array, function(min, current) {
+            return Math.min(min || current, current);
+        });
     },
 
 
     max : function (array) {
-        return functional.reduce(array, function(max, current) { return Math.max(max||current, current); });
+        return functional.reduce(array, function(max, current) {
+            return Math.max(max || current, current);
+        });
     },
 
     each : function (array, fn) {
-        for(var i = 0; i < array.length; ++i) {
-            fn(array[i],i);
+        for (var i = 0; i < array.length; ++i) {
+            fn(array[i], i);
         }
     },
 
     map : function (array, fn) {
         var mapped = [];
-        functional.each(array, function(i) { mapped.push(fn(i)); });
+        functional.each(array, function(i) {
+            mapped.push(fn(i));
+        });
         return mapped;
     },
 
-    reduce : function (array, fn ) {
+    reduce : function (array, fn) {
         var accumulator = arguments[2];
         functional.each(array, function(item) {
-            accumulator = fn(accumulator,item);
+            accumulator = fn(accumulator, item);
         });
         return accumulator;
     }
-}
+};
+
+
 
 function LayoutItem(node) {
         this.$this = $(node).css("position", "absolute");
+        this.nodeId = node.id;
         this.width = this.$this.outerWidth(true);
         this.height = this.$this.outerHeight(true);
         this.moveTo(0,0);
     }
 
-    //TODO: fix this for when items overlap LHS to RHS, but bottom is below bottom
-    LayoutItem.prototype.intercepts = function(other) {
-        return (functional.between(this.left, other.left, other.right) && functional.between(this.top, other.top, other.bottom))
-                || (functional.between(other.left, this.left, this.right) && functional.between(other.top, this.top, this.bottom))
+    LayoutItem.prototype.contains = function(x,y) {
+        return functional.between(x, this.left, this.right)
+                && functional.between(y, this.top, this.bottom);
     };
+    
+    LayoutItem.prototype.intercepts = function(other) {
+        return this.contains(other.left, other.top)
+                || this.contains(other.right, other.top)
+                || this.contains(other.left, other.bottom)
+                || this.contains(other.right, other.bottom);
+    };
+;
 
     LayoutItem.prototype.moveTo = function(left, top) {
         this.top = top;
-        this.bottom = this.top + this.height;
+        this.bottom = this.top + this.height - 1;
         this.left = left;
-        this.right = this.left + this.width;
+        this.right = this.left + this.width - 1;
 
         this.$this.css({ "top": this.top + "px", "left": this.left + "px" });
     };
@@ -93,6 +93,10 @@ function LayoutItem(node) {
         var leftOffset = offset.left || 0;
         var topOffset = offset.top || 0;
         this.moveTo(this.left + leftOffset, this.top + topOffset )
+    };
+
+    LayoutItem.prototype.toString = function() {
+        return this.nodeId + " @(" + this.left + "," + this.top + ") #(" + this.right + "," + this.bottom + ")";
     };
 
 $(function() {
@@ -146,30 +150,36 @@ $(function() {
                 currentItem.moveTo(currentX, currentY);
                 var count = 0;
                 var interceptor;
-                while( (interceptor = _.first(previous, function(l){ return currentItem.intercepts(l); })) ) {
-                    console.log(currentItem.$this[0].id," intercepts with ",interceptor.$this[0].id);
+                while( (interceptor = _.first(previous, function(l){ return currentItem.intercepts(l) || l.intercepts(currentItem); }))
+                        && (count < previous.length) ) {
+                    console.log(currentItem.toString()," intercepts with ",interceptor.toString());
 
-                    currentX += interceptor.width + 1;
+                    currentX = interceptor.right+1;
 
                     if(currentX + currentItem.width >= self.maxWidth) {
                         currentX = 0;
-                        currentY += minItemHeight + 1;
+                        currentY += minItemHeight;
+                        count = 0;
+                    } else {
+                        count++;
                     }
                     currentItem.moveTo(currentX, currentY);
+
                 }
                 if(count > previous.length) {
                     throw "WTF?!?";
                 }
                 console.log(currentItem.$this[0].id, " resting at ", currentItem.left,",",currentItem.top)
                 previous.push(currentItem)
+
             }
 
             var rightmostPoint = _.max(_.map(self.items, function(i) { return i.right }));
             var leftOffset = Math.floor((this.maxWidth - rightmostPoint) / 2);
-            if(leftOffset) _.each(self.items, function(i){ i.moveBy({left:leftOffset}); });
+            if(leftOffset) _.each(self.items, function(i){ i.moveBy({left:leftOffset, top: leftOffset}); });
             var yPosition = _.max(_.map(self.items, function(i) { return i.bottom; }));
 
-            this.$container.css("height", yPosition)
+            this.$container.css("height", yPosition + leftOffset);
         }
     }
 
