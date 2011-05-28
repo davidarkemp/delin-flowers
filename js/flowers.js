@@ -60,7 +60,7 @@ var functional = {
 
 
 function LayoutItem(node) {
-        this.$this = $(node).css("position", "absolute");
+        this.$this = $(node).css({"position": "absolute" });
         this.nodeId = node.id;
         this.width = this.$this.outerWidth(true);
         this.height = this.$this.outerHeight(true);
@@ -72,11 +72,15 @@ function LayoutItem(node) {
                 && functional.between(y, this.top, this.bottom);
     };
     
+    LayoutItem.intercepts = function(one,other) {
+        return one.contains(other.left, other.top)
+                || one.contains(other.right, other.top)
+                || one.contains(other.left, other.bottom)
+                || one.contains(other.right, other.bottom);
+    };
+
     LayoutItem.prototype.intercepts = function(other) {
-        return this.contains(other.left, other.top)
-                || this.contains(other.right, other.top)
-                || this.contains(other.left, other.bottom)
-                || this.contains(other.right, other.bottom);
+        return LayoutItem.intercepts(this,other) || LayoutItem.intercepts(other,this);
     };
 ;
 
@@ -150,15 +154,21 @@ $(function() {
                 currentItem.moveTo(currentX, currentY);
                 var count = 0;
                 var interceptor;
-                while( (interceptor = _.first(previous, function(l){ return currentItem.intercepts(l) || l.intercepts(currentItem); }))
+                while( (interceptor = _.first(previous, function(l){ return currentItem.intercepts(l) }))
                         && (count < previous.length) ) {
+                    if(i == 14 )
                     console.log(currentItem.toString()," intercepts with ",interceptor.toString());
 
                     currentX = interceptor.right+1;
 
                     if(currentX + currentItem.width >= self.maxWidth) {
                         currentX = 0;
-                        currentY += minItemHeight;
+                        currentItem.moveTo(currentX, currentY);
+
+                        if(interceptor = _.first(previous, function(l) { return l.intercepts(currentItem)})) {
+                            currentY = interceptor.bottom + 1;
+                            currentItem.moveTo(currentX, currentY);
+                        }
                         count = 0;
                     } else {
                         count++;
@@ -169,7 +179,7 @@ $(function() {
                 if(count > previous.length) {
                     throw "WTF?!?";
                 }
-                console.log(currentItem.$this[0].id, " resting at ", currentItem.left,",",currentItem.top)
+                
                 previous.push(currentItem)
 
             }
