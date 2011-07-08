@@ -67,9 +67,10 @@ var functional = {
 
 function LayoutItem(node) {
         this.$this = $(node).css({"position": "absolute" });
+        this.$this.data("layoutItem", this);
         this.nodeId = node.id;
-    this.measure();
-    this.moveTo(0,0);
+        this.measure();
+        this.moveTo(0,0);
     }
 
     LayoutItem.prototype.measure = function () {
@@ -126,13 +127,14 @@ $(function() {
                 var $this = $(this);
                 $this
                     .toggle(function() {
-                        showImage.apply($this, [ function() { $this.addClass("large"); } ]);
-
+                        showImage.apply($this);
                     }, function() {
                         hideImage.apply($this, [ function() { $this.removeClass("large"); } ]);
                     });
+                $this.bind("afterExpand", function() { $this.addClass("large"); } );
                 new Image().src = $this.find('a').attr('href');
             })
+
             .end()
             .each(function(i,e) {
                 e.id = "item" + i;
@@ -168,9 +170,7 @@ $(function() {
                 var interceptor;
                 while( (interceptor = _.first(previous, function(l){ return currentItem.intercepts(l) }))
                         && (count < previous.length) ) {
-                    if(i == 14 )
-                    console.log(currentItem.toString()," intercepts with ",interceptor.toString());
-
+                    
                     currentX = interceptor.right+1;
 
                     if(currentX + currentItem.width >= self.maxWidth) {
@@ -216,30 +216,32 @@ $(function() {
         $this.data("thumbnail", $img.attr("src"));
 
         var image = new Image();
-        $(image).load(function() {
-
-            $img.css({ width: '100%', height: '100%' })
-                .attr("src", image.src);
-
-            var captionHeight = $this.find('.caption').css("width", image.width).height();
-
-            $this.css("zIndex", 100);
-
-            var position = $this.position();
-            var newLeft = position.left, newTop = position.top;
-            if(position.left + image.width > $flowerHolder.width()) newLeft = position.left - ($img.width() - $this.width());
-            $this.data("oldLeft", position.left)
-            $this.animate({ width: image.width, height: image.height + captionHeight, left: newLeft },
-                    function() {
-                        if(callback) callback();
-                        $img.css({ width: "auto", height: "auto" });
-                        window.layoutEngine.layout(true);
-                    });
-        });
-
+        $(image).load(function() { expandImage($this,$img,image) });
         image.src = $this.find("a")[0].href;
+    }
 
+    function expandImage($container, $img, newImage) {
+        $img.css({ width: '100%', height: '100%' })
+            .attr("src", newImage.src);
 
+        var captionHeight = $container.find('.caption').css("width", newImage.width).height();
+
+        $container.css("zIndex", 100);
+
+        var position = $container.position();
+        var newLeft = position.left, newTop = position.top;
+        if (position.left + newImage.width > $flowerHolder.width()) newLeft = position.left - ($img.width() - $container.width());
+        $container.data("oldLeft", position.left);
+
+        var e = jQuery.Event("before", { newLeft: newLeft, newTop: newTop });
+        $container.trigger(e);
+        if(e.cancel) return;
+        $container.animate({ width: newImage.width, height: newImage.height + captionHeight, left: newLeft },
+            function() {
+                $container.trigger("afterExpand");
+                $img.css({ width: "auto", height: "auto" });
+                window.layoutEngine.layout(true);
+            });
     }
 
     function hideImage(callback) {
