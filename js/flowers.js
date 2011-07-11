@@ -119,9 +119,8 @@ function LayoutItem(node) {
 $(function() {
 
     var $flowerHolder = $("#flower-holder").css("position", "relative");
-    //$flowerHolder
     var $items =
-    $(".item", $flowerHolder)
+        $(".item", $flowerHolder)
             .filter(":has(img)")
             .each(function() {
                 var $this = $(this);
@@ -129,9 +128,10 @@ $(function() {
                     .toggle(function() {
                         showImage.apply($this);
                     }, function() {
-                        hideImage.apply($this, [ function() { $this.removeClass("large"); } ]);
+                        hideImage.apply($this);
                     });
                 $this.bind("afterExpand", function() { $this.addClass("large"); } );
+                $this.bind("afterContract", function() { $this.removeClass("large")});
                 new Image().src = $this.find('a').attr('href');
             })
 
@@ -233,9 +233,16 @@ $(function() {
         if (position.left + newImage.width > $flowerHolder.width()) newLeft = position.left - ($img.width() - $container.width());
         $container.data("oldLeft", position.left);
 
-        var e = jQuery.Event("before", { newLeft: newLeft, newTop: newTop });
+        var e = jQuery.Event("beforeExpand", {
+            newLeft: newLeft,
+            newTop: newTop,
+            newWidth: newImage.width,
+            newHeight: newImage.height + captionHeight });
+
         $container.trigger(e);
+
         if(e.cancel) return;
+
         $container.animate({ width: newImage.width, height: newImage.height + captionHeight, left: newLeft },
             function() {
                 $container.trigger("afterExpand");
@@ -250,10 +257,23 @@ $(function() {
 
         var size = $this.data("size");
 
-        $this.animate({ width: size[0], height: size[1], left: $this.data("oldLeft") }, function() {
+
+        var newWidth = size[0];
+        var newHeight = size[1];
+        var newLeft = $this.data("oldLeft");
+
+        var e = jQuery.Event("beforeContract", {
+            newLeft: newLeft,
+            newTop: $this.position().top,
+            newWidth: newWidth,
+            newHeight: newHeight });
+
+        $this.trigger(e);
+
+        $this.animate({ width: newWidth , height: newHeight, left: newLeft }, function() {
             $this.find("img").attr("src", $this.data("thumbnail"));
             $this.css("zIndex", 0);
-            if(callback) callback();
+            $this.trigger("afterContract");
             window.layoutEngine.layout();
         });
         return true;
