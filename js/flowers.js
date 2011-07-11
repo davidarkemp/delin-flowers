@@ -118,6 +118,7 @@ function LayoutItem(node) {
 
 $(function() {
 
+    var imageQueueLength = 0;
     var $flowerHolder = $("#flower-holder").css("position", "relative");
     var $items =
         $(".item", $flowerHolder)
@@ -205,6 +206,7 @@ $(function() {
         }
     }
 
+
     function showImage(callback) {
 
         var $this = $(this);
@@ -215,13 +217,18 @@ $(function() {
         $this.data("size", size);
         $this.data("thumbnail", $img.attr("src"));
 
+        imageQueueLength += 1;
         var image = new Image();
         $(image).load(function() { expandImage($this,$img,image) });
-        image.src = $this.find("a")[0].href;
+        setTimeout(function() {image.src = $this.find("a")[0].href;}, 1);
+
     }
 
-    function expandImage($container, $img, newImage) {
-        $img.css({ width: '100%', height: '100%' })
+    function expandImage($container, $targetImage, newImage) {
+        console.log(imageQueueLength);
+        if(--imageQueueLength > 0) return;
+
+        $targetImage.css({ width: '100%', height: '100%' })
             .attr("src", newImage.src);
 
         var captionHeight = $container.find('.caption').css("width", newImage.width).height();
@@ -230,8 +237,9 @@ $(function() {
 
         var position = $container.position();
         var newLeft = position.left, newTop = position.top;
-        if (position.left + newImage.width > $flowerHolder.width()) newLeft = position.left - ($img.width() - $container.width());
+        if (position.left + newImage.width > $flowerHolder.width()) newLeft = position.left - ($targetImage.width() - $container.width());
         $container.data("oldLeft", position.left);
+
 
         var e = jQuery.Event("beforeExpand", {
             newLeft: newLeft,
@@ -246,7 +254,7 @@ $(function() {
         $container.animate({ width: newImage.width, height: newImage.height + captionHeight, left: newLeft },
             function() {
                 $container.trigger("afterExpand");
-                $img.css({ width: "auto", height: "auto" });
+                $targetImage.css({ width: "auto", height: "auto" });
                 window.layoutEngine.layout(true);
             });
     }
