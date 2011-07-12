@@ -40,7 +40,7 @@ var functional = {
             var args = functional.reduce(arguments,function(a,arg) { a.push(arg); return a; }, []);
             args.splice(2);
             fn = function(i) { i[method].apply(i,args); }
-        };
+        }
         for (var i = 0; i < array.length; ++i) {
             fn(array[i], i);
         }
@@ -63,12 +63,24 @@ var functional = {
     }
 };
 
-jQuery.fn.resizeTo = function(newWidth, newHeight) {
-    this.trigger("beforeResize", { width: newWidth, height: newHeight });
-    return this.animate( { width: newWidth, height: newHeight }, function() {
-      $(this).trigger("afterResize");
-    });
+function Size(width, height) {
+    this.width = width;
+    this.height = height;
 }
+
+Size.prototype.isSmallerThan = function(other) {
+    return other.width > this.width;
+};
+
+jQuery.fn.resizeTo = function(newWidth, newHeight) {
+    var oldSize = new Size(this.width(), this.height());
+    var newSize = new Size(newWidth, newHeight);
+    var parameters = { oldSize: oldSize, newSize: newSize };
+    this.trigger("beforeResize", parameters);
+    return this.animate( { width: newWidth, height: newHeight }, function() {
+      $(this).trigger("afterResize", parameters);
+    });
+};
 
 jQuery.fn.loadImage = function(url) {
     this.each(function() {
@@ -80,7 +92,7 @@ jQuery.fn.loadImage = function(url) {
         });
         return image.src = url;
     });
-}
+};
 
 function LayoutItem(node) {
         this.$this = $(node).css({"position": "absolute" });
@@ -93,7 +105,7 @@ function LayoutItem(node) {
     LayoutItem.prototype.measure = function () {
         this.width = this.$this.outerWidth(true);
         this.height = this.$this.outerHeight(true);
-    }
+    };
 
     LayoutItem.prototype.contains = function(x,y) {
         return functional.between(x, this.left, this.right)
@@ -110,7 +122,6 @@ function LayoutItem(node) {
     LayoutItem.prototype.intercepts = function(other) {
         return LayoutItem.intercepts(this,other) || LayoutItem.intercepts(other,this);
     };
-;
 
     LayoutItem.prototype.moveTo = function(left, top) {
         this.top = top;
@@ -127,7 +138,7 @@ function LayoutItem(node) {
 
     LayoutItem.prototype.doMove = function(animate) {
         this.$this[animate?"animate":"css"]({ "top": this.top + "px", "left": this.left + "px" });
-    }
+    };
 
     LayoutItem.prototype.toString = function() {
         return this.nodeId + " @(" + this.left + "," + this.top + ") #(" + this.right + "," + this.bottom + ")";
@@ -137,24 +148,28 @@ $(function() {
 
     var imageQueueLength = 0;
     var $flowerHolder = $("#flower-holder").css("position", "relative");
+    $flowerHolder
+        .delegate("div", "beforeResize", function(e,o) {
+            if(o.oldSize.isSmallerThan(o.newSize)) {
+                console.log("about to grow", this,o);
+            } else {
+                console.log("about to shrink", this,o);
+            }
+        })
+        .delegate("div", "imageLoaded", function(e, image) {
+            expandImage($(this), image);
+        })
+        .delegate("div", "afterExpand", function() { $(this).addClass("large"); })
+        .delegate("div", "afterContract", function() { $(this).removeClass("large")})
+        .delegate("div:has(img)", "click", function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var action = $this.hasClass("large") ? hideImage : showImage;
+            action.apply($this);
+        });
+
     var $items =
         $(".item", $flowerHolder)
-            .filter(":has(img)")
-            .each(function() {
-                var $this = $(this);
-                $this
-                    .toggle(function() {
-                        showImage.apply($this);
-                    }, function() {
-                        hideImage.apply($this);
-                    });
-                $this.bind("imageLoaded", function(e, image) { expandImage($this,image); } );
-                $this.bind("afterExpand", function() { $this.addClass("large"); } );
-                $this.bind("afterContract", function() { $this.removeClass("large")});
-                new Image().src = $this.find('a').attr('href');
-            })
-
-            .end()
             .each(function(i,e) {
                 e.id = "item" + i;
             });
@@ -163,6 +178,7 @@ $(function() {
     return window.layoutEngine.layout();
 
     function LayoutEngine(container, items) {
+        //noinspection UnnecessaryLocalVariableJS
         var _ = functional;
         this.$container = $(container);
         this.items = _.map(items, function(item){
@@ -235,7 +251,6 @@ $(function() {
     }
 
     function expandImage($container, newImage) {
-        console.log(imageQueueLength);
         if(--imageQueueLength > 0) return;
 
         var $targetImage = $container.find("img");
@@ -296,6 +311,7 @@ $(function() {
 
         $this.trigger(e);
 
+        $this.resizeTo(newWidth, newHeight);
         $this.animate({ width: newWidth , height: newHeight, left: newLeft }, function() {
             $this.find("img").attr("src", $this.data("thumbnail"));
             $this.css("zIndex", 0);
