@@ -63,7 +63,24 @@ var functional = {
     }
 };
 
+jQuery.fn.resizeTo = function(newWidth, newHeight) {
+    this.trigger("beforeResize", { width: newWidth, height: newHeight });
+    return this.animate( { width: newWidth, height: newHeight }, function() {
+      $(this).trigger("afterResize");
+    });
+}
 
+jQuery.fn.loadImage = function(url) {
+    this.each(function() {
+        var $this = $(this);
+        $this.trigger("beforeLoadImage");
+        var image = new Image();
+        $(image).load(function() {
+            $this.trigger("imageLoaded",image);
+        });
+        return image.src = url;
+    });
+}
 
 function LayoutItem(node) {
         this.$this = $(node).css({"position": "absolute" });
@@ -131,6 +148,7 @@ $(function() {
                     }, function() {
                         hideImage.apply($this);
                     });
+                $this.bind("imageLoaded", function(e, image) { expandImage($this,image); } );
                 $this.bind("afterExpand", function() { $this.addClass("large"); } );
                 $this.bind("afterContract", function() { $this.removeClass("large")});
                 new Image().src = $this.find('a').attr('href');
@@ -211,22 +229,20 @@ $(function() {
 
         var $this = $(this);
 
-        var $img = $this.find("img");
-        var size = [$this.width(),$this.height()];
-        console.log("show",$this,size);
-        $this.data("size", size);
-        $this.data("thumbnail", $img.attr("src"));
-
         imageQueueLength += 1;
-        var image = new Image();
-        $(image).load(function() { expandImage($this,$img,image) });
-        setTimeout(function() {image.src = $this.find("a")[0].href;}, 1);
 
+        return $this.loadImage($this.find("a").get(0).href);
     }
 
-    function expandImage($container, $targetImage, newImage) {
+    function expandImage($container, newImage) {
         console.log(imageQueueLength);
         if(--imageQueueLength > 0) return;
+
+        var $targetImage = $container.find("img");
+        var size = [$container.width(),$container.height()];
+
+        $container.data("size", size);
+        $container.data("thumbnail", $targetImage.attr("src"));
 
         $targetImage.css({ width: '100%', height: '100%' })
             .attr("src", newImage.src);
@@ -250,6 +266,8 @@ $(function() {
         $container.trigger(e);
 
         if(e.cancel) return;
+
+        $container.resizeTo(newImage.width, newImage.height + captionHeight);
 
         $container.animate({ width: newImage.width, height: newImage.height + captionHeight, left: newLeft },
             function() {
