@@ -60,6 +60,15 @@ var functional = {
             accumulator = fn(accumulator, item);
         });
         return accumulator;
+    },
+
+    filter : function(array, fn) {
+        var matched = [];
+        functional.each(array, function(item) {
+            if(fn(item))
+                matched.push(item);
+        });
+        return matched;
     }
 };
 
@@ -76,10 +85,10 @@ jQuery.fn.resizeTo = function(newWidth, newHeight) {
     var oldSize = new Size(this.width(), this.height());
     var newSize = new Size(newWidth, newHeight);
     var parameters = { oldSize: oldSize, newSize: newSize };
-    this.trigger("beforeResize", parameters);
-    return this.animate( { width: newWidth, height: newHeight }, function() {
+    this.trigger("wantsResize", parameters);
+    /*return this.animate( { width: newWidth, height: newHeight }, function() {
       $(this).trigger("afterResize", parameters);
-    });
+    });*/
 };
 
 jQuery.fn.loadImage = function(url) {
@@ -94,17 +103,52 @@ jQuery.fn.loadImage = function(url) {
     });
 };
 
-function LayoutItem(node) {
-        this.$this = $(node).css({"position": "absolute" });
+function LayoutItem(node,manager) {
+        this.$this =
+            $(node)
+                .css({"position": "absolute" })
+                .bind("wantsToGrow", $.proxy(this.grow, this))
+                .bind("wantsToShrink", $.proxy(this.shrink, this));
         this.$this.data("layoutItem", this);
+        this.manager = manager;
         this.nodeId = node.id;
+        this.node = node;
         this.measure();
         this.moveTo(0,0);
     }
 
+    LayoutItem.prototype.shrink = function(e, newSize) {
+        console.log("shrink",this.nodeId,newSize)
+        this.width = this.extraWidth + newSize.width;
+        this.height = this.extraHeight + newSize.height;
+        this.moveTo(this.left, this.top);
+
+        this.manager.layout(true);
+
+        this.$this.trigger("afterShrink");
+    }
+
+    LayoutItem.prototype.grow = function (e, newSize) {
+        var newLeft = this.left;
+
+        this.width = this.extraWidth + newSize.width;
+        this.height = this.extraHeight + newSize.height;
+        if(this.left + this.width > this.manager.maxWidth) {
+            newLeft = this.right - (newSize.width + this.extraWidth);
+        }
+
+        this.moveTo(newLeft, this.top);
+
+        this.manager.layout(true,[this]);
+
+        this.$this.trigger("afterGrow");
+    }
+
     LayoutItem.prototype.measure = function () {
         this.width = this.$this.outerWidth(true);
+        this.extraWidth = this.width - this.$this.width();
         this.height = this.$this.outerHeight(true);
+        this.extraHeight = this.height - this.$this.height();
     };
 
     LayoutItem.prototype.contains = function(x,y) {
@@ -136,8 +180,14 @@ function LayoutItem(node) {
         this.moveTo(this.left + leftOffset, this.top + topOffset )
     };
 
-    LayoutItem.prototype.doMove = function(animate) {
-        this.$this[animate?"animate":"css"]({ "top": this.top + "px", "left": this.left + "px" });
+    LayoutItem.prototype.commit = function(animate) {
+        var newDetails = {
+            "top": this.top + "px",
+            "left": this.left + "px",
+            "width": (this.width - this.extraWidth) + "px",
+            "height": (this.height - this.extraHeight) + "px" };
+        console.log("resize",this.nodeId,newDetails);
+        this.$this[animate?"animate":"css"](newDetails);
     };
 
     LayoutItem.prototype.toString = function() {
@@ -149,18 +199,18 @@ $(function() {
     var imageQueueLength = 0;
     var $flowerHolder = $("#flower-holder").css("position", "relative");
     $flowerHolder
-        .delegate("div", "beforeResize", function(e,o) {
-            if(o.oldSize.isSmallerThan(o.newSize)) {
-                console.log("about to grow", this,o);
-            } else {
-                console.log("about to shrink", this,o);
-            }
+        .delegate("div", "wantsResize", function(e,o) {
+            var eventName =
+                o.oldSize.isSmallerThan(o.newSize)
+                    ? "wantsToGrow"
+                    : "wantsToShrink";
+            $(this).trigger(eventName, o.newSize);
         })
         .delegate("div", "imageLoaded", function(e, image) {
             expandImage($(this), image);
         })
-        .delegate("div", "afterExpand", function() { $(this).addClass("large"); })
-        .delegate("div", "afterContract", function() { $(this).removeClass("large")})
+        .delegate("div", "afterGrow", function() { $(this).addClass("large"); })
+        .delegate("div", "afterShrink", function() { $(this).removeClass("large")})
         .delegate("div:has(img)", "click", function(e) {
             e.preventDefault();
             var $this = $(this);
@@ -180,25 +230,27 @@ $(function() {
     function LayoutEngine(container, items) {
         //noinspection UnnecessaryLocalVariableJS
         var _ = functional;
+        var self = this;
         this.$container = $(container);
         this.items = _.map(items, function(item){
-            return new LayoutItem(item);
+            return new LayoutItem(item,self);
         });
+        this.maxWidth = this.$container.width();
+
         this.layout = layout;
 
-        function layout(animate){
-            var self = this;
+        function layout(animate, fixedSize){
 
-            self.maxWidth = self.$container.width();
-
-            _.each(this.items, "measure");
+            fixedSize = fixedSize || [];
 
             var minItemWidth = _.min(_.map(this.items, function(item) { return item.width; }));
             var minItemHeight = _.min(_.map(this.items, function(item) { return item.height; }));
 
-            var previous = [];
-            for(var i = 0; i < self.items.length; ++i) {
-                var currentItem = self.items[i];
+            var previous = _.map(fixedSize, function(e) { return e; });
+
+            var toLayout = _.filter(self.items, function(item) { return fixedSize.indexOf(item) == -1; } );
+            for(var i = 0; i < toLayout.length; ++i) {
+                var currentItem = toLayout[i];
                 var currentX = 0, currentY = 0;
                 currentItem.moveTo(currentX, currentY);
                 var count = 0;
@@ -230,11 +282,12 @@ $(function() {
                 previous.push(currentItem)
             }
 
-            var rightmostPoint = _.max(_.map(self.items, function(i) { return i.right }));
-            var leftOffset = Math.floor((this.maxWidth - rightmostPoint) / 2);
-            if(leftOffset) _.each(self.items, function(i){ i.moveBy({left:leftOffset, top: leftOffset}); });
-            _.each(self.items, "doMove", animate);
-            var yPosition = _.max(_.map(self.items, function(i) { return i.bottom; }));
+            var rightmostPoint = _.max(_.map(toLayout, function(i) { return i.right }));
+            var leftOffset = Math.floor((self.maxWidth - rightmostPoint) / 2);
+            if(leftOffset) _.each(toLayout, function(i){ i.moveBy({left:leftOffset, top: leftOffset}); });
+            _.each(self.items, "commit", animate);
+            var yPosition = _.max(_.map(toLayout, function(i) { return i.bottom; }));
+
 
             this.$container.css("height", yPosition + leftOffset);
         }
@@ -271,25 +324,7 @@ $(function() {
         if (position.left + newImage.width > $flowerHolder.width()) newLeft = position.left - ($targetImage.width() - $container.width());
         $container.data("oldLeft", position.left);
 
-
-        var e = jQuery.Event("beforeExpand", {
-            newLeft: newLeft,
-            newTop: newTop,
-            newWidth: newImage.width,
-            newHeight: newImage.height + captionHeight });
-
-        $container.trigger(e);
-
-        if(e.cancel) return;
-
         $container.resizeTo(newImage.width, newImage.height + captionHeight);
-
-        $container.animate({ width: newImage.width, height: newImage.height + captionHeight, left: newLeft },
-            function() {
-                $container.trigger("afterExpand");
-                $targetImage.css({ width: "auto", height: "auto" });
-                window.layoutEngine.layout(true);
-            });
     }
 
     function hideImage(callback) {
@@ -303,21 +338,8 @@ $(function() {
         var newHeight = size[1];
         var newLeft = $this.data("oldLeft");
 
-        var e = jQuery.Event("beforeContract", {
-            newLeft: newLeft,
-            newTop: $this.position().top,
-            newWidth: newWidth,
-            newHeight: newHeight });
-
-        $this.trigger(e);
-
         $this.resizeTo(newWidth, newHeight);
-        $this.animate({ width: newWidth , height: newHeight, left: newLeft }, function() {
-            $this.find("img").attr("src", $this.data("thumbnail"));
-            $this.css("zIndex", 0);
-            $this.trigger("afterContract");
-            window.layoutEngine.layout();
-        });
+
         return true;
     }
 });         
