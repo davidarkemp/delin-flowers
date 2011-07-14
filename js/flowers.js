@@ -118,7 +118,7 @@ function LayoutItem(node,manager) {
     }
 
     LayoutItem.prototype.shrink = function(e, newSize) {
-        console.log("shrink",this.nodeId,newSize)
+
         this.width = this.extraWidth + newSize.width;
         this.height = this.extraHeight + newSize.height;
         this.moveTo(this.left, this.top);
@@ -186,7 +186,7 @@ function LayoutItem(node,manager) {
             "left": this.left + "px",
             "width": (this.width - this.extraWidth) + "px",
             "height": (this.height - this.extraHeight) + "px" };
-        console.log("resize",this.nodeId,newDetails);
+        
         this.$this[animate?"animate":"css"](newDetails);
     };
 
@@ -238,6 +238,7 @@ $(function() {
         this.maxWidth = this.$container.width();
 
         this.layout = layout;
+        this.leftOffset = 0;
 
         function layout(animate, fixedSize){
 
@@ -251,17 +252,18 @@ $(function() {
             var toLayout = _.filter(self.items, function(item) { return fixedSize.indexOf(item) == -1; } );
             for(var i = 0; i < toLayout.length; ++i) {
                 var currentItem = toLayout[i];
-                var currentX = 0, currentY = 0;
+                var currentX = self.leftOffset;
+                var currentY = self.leftOffset;
                 currentItem.moveTo(currentX, currentY);
                 var count = 0;
                 var interceptor;
                 while( (interceptor = _.first(previous, function(l){ return currentItem.intercepts(l) }))
                         && (count < previous.length) ) {
-                    
+
                     currentX = interceptor.right+1;
 
                     if(currentX + currentItem.width >= self.maxWidth) {
-                        currentX = 0;
+                        currentX = self.leftOffset;
                         currentItem.moveTo(currentX, currentY);
 
                         if(interceptor = _.first(previous, function(l) { return l.intercepts(currentItem)})) {
@@ -273,23 +275,26 @@ $(function() {
                         count++;
                     }
                     currentItem.moveTo(currentX, currentY);
-
                 }
                 if(count > previous.length) {
                     throw "WTF?!?";
                 }
-                
+
                 previous.push(currentItem)
             }
 
-            var rightmostPoint = _.max(_.map(toLayout, function(i) { return i.right }));
-            var leftOffset = Math.floor((self.maxWidth - rightmostPoint) / 2);
-            if(leftOffset) _.each(toLayout, function(i){ i.moveBy({left:leftOffset, top: leftOffset}); });
+            if(typeof self.rightmostPoint === "undefined") {
+                console.log("adjusting")
+                self.rightmostPoint = _.max(_.map(toLayout, function(i) { return i.right }));
+                self.leftOffset = Math.floor((self.maxWidth - self.rightmostPoint) / 2);
+                if(self.leftOffset)
+                    _.each(toLayout, function(i){ i.moveBy({left:self.leftOffset, top: self.leftOffset}); });
+            }
             _.each(self.items, "commit", animate);
             var yPosition = _.max(_.map(toLayout, function(i) { return i.bottom; }));
 
 
-            this.$container.css("height", yPosition + leftOffset);
+            this.$container.css("height", yPosition + self.leftOffset);
         }
     }
 
