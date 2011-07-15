@@ -181,13 +181,23 @@ function LayoutItem(node,manager) {
     };
 
     LayoutItem.prototype.commit = function(animate) {
+        var self = this;
         var newDetails = {
             "top": this.top + "px",
             "left": this.left + "px",
             "width": (this.width - this.extraWidth) + "px",
             "height": (this.height - this.extraHeight) + "px" };
-        
-        this.$this[animate?"animate":"css"](newDetails);
+
+        if(animate)
+            this.$this.animate(newDetails, raiseCommitted);
+        else {
+            this.$this.css(newDetails);
+            raiseCommitted();
+        }
+
+        function raiseCommitted() {
+            self.$this.trigger("resized", new Size(newDetails.width, newDetails.height));
+        }
     };
 
     LayoutItem.prototype.toString = function() {
@@ -317,7 +327,7 @@ $(function() {
         $container.data("size", size);
         $container.data("thumbnail", $targetImage.attr("src"));
 
-        $targetImage.css({ width: '100%', height: '100%' })
+        $targetImage//.css({ width: '100%', height: '100%' })
             .attr("src", newImage.src);
 
         var captionHeight = $container.find('.caption').css("width", newImage.width).height();
@@ -329,19 +339,28 @@ $(function() {
         if (position.left + newImage.width > $flowerHolder.width()) newLeft = position.left - ($targetImage.width() - $container.width());
         $container.data("oldLeft", position.left);
 
+        $targetImage.animate(new Size(newImage.width, newImage.height));
+
+        $container.one("resized", function() {
+                $targetImage.css(new Size(newImage.width, newImage.height));
+        });
+
         $container.resizeTo(newImage.width, newImage.height + captionHeight);
     }
 
-    function hideImage(callback) {
-        
+    function hideImage() {
+
         var $this = $(this);
 
         var size = $this.data("size");
 
-
         var newWidth = size[0];
         var newHeight = size[1];
-        var newLeft = $this.data("oldLeft");
+        var $targetImage = $this.find("img").animate(new Size(newWidth,newHeight));
+
+        $this.one("resized", function() {
+            $targetImage.attr("src", $this.data("thumbnail"));
+        });
 
         $this.resizeTo(newWidth, newHeight);
 
