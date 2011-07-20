@@ -73,6 +73,21 @@ var functional = {
 
     identity : function(o) {
         return o;
+    },
+
+    debounce: function(f, wait) {
+
+        var timeout;
+
+        function debounced() {
+            if (timeout) timeout = undefined;
+            f.apply(this, arguments);
+        }
+
+        return function() {
+            if(timeout) clearTimeout(timeout);
+            return timeout = setTimeout(debounced, wait);
+        }
     }
 };
 
@@ -278,10 +293,24 @@ $(function() {
         this.items = _.map(items, function(item){
             return new LayoutItem(item,self);
         });
-        this.maxWidth = this.$container.width();
 
-        this.layout = layout;
-        this.leftOffset = 0;
+        this.reset = function() {
+        
+            this.maxWidth = this.$container.width();
+
+            this.layout = layout;
+            this.leftOffset = 0;
+        };
+
+        this.reset();
+
+        var resizeHandler = _.debounce(function() {
+            console.log("window resized");
+            self.reset();
+            self.layout(true);
+        },500);
+
+        $(window).bind("resize",resizeHandler);
 
         function layout(animate, fixedSize){
 
@@ -301,7 +330,12 @@ $(function() {
                 currentItem.moveTo(currentX, currentY);
                 var count = 0;
                 var interceptor;
+                var overlaps = function(l) {
+                    return currentItem.intercepts(l);
+                };
                 while( (interceptor = _.first(previous, overlaps)) && (count < previous.length)) {
+
+
 
                     currentX = interceptor.right + 1;
 
@@ -327,9 +361,7 @@ $(function() {
 
                 previous.push(currentItem)
 
-                function overlaps(l) {
-                    return currentItem.intercepts(l)
-                }
+
             }
 
             if(typeof self.rightmostPoint === "undefined") {
@@ -343,7 +375,7 @@ $(function() {
             var yPosition = _.max(_.map(previous, function(i) { return i.bottom; }));
 
 
-            this.$container.css("height", yPosition + self.leftOffset);
+            this.$container[animate?"animate":"css"]( { "height": yPosition + self.leftOffset*2 });
         }
     }
 
