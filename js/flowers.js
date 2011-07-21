@@ -282,6 +282,17 @@ $(function() {
                 e.id = "item" + i;
             });
 
+    $("#filter-menu").delegate("a", "click", function() {
+        var filter = $(this).data("filter");
+        console.log("filter", filter);
+        $flowerHolder.find(".item")
+            .filter(filter).filter(":hidden").show().end().end()
+            .filter(":not("+filter+")").filter(":visible").hide();
+            
+        window.layoutEngine.layout(true);
+        return false;
+    });
+
     window.layoutEngine = new LayoutEngine($flowerHolder, $items);
     return window.layoutEngine.layout();
 
@@ -322,7 +333,7 @@ $(function() {
 
             var previous = _.map(fixedSize, _.identity);
 
-            var toLayout = _.filter(self.items, function(item) { return fixedSize.indexOf(item) == -1; } );
+            var toLayout = _.filter(self.items, function(item) { return item.$this.is(":visible") && fixedSize.indexOf(item) == -1; } );
             for(var i = 0; i < toLayout.length; ++i) {
                 var currentItem = toLayout[i];
                 var currentX = self.leftOffset;

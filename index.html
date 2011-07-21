@@ -68,13 +68,33 @@
             width: 184px;
         }
 
+        #filter-menu {
+            background: #feddfe;
+            overflow: hidden;
+            list-style: none inside none;
+            margin: 0;
+            padding: 0.2em;
+            font-size: 1.1em;
+        }
+
+        #filter-menu li {
+            padding: 0 0.2em;
+            float: left;
+        }
+
     </style>
 </head>
 <body>
 <div id="content">
 <h1>we're not using float:left</h1>
+<ul id="filter-menu">
+    <li><a href="#" data-filter="*">all</a></li>
+    <li><a href="#" data-filter=".cta, .orchid">orchid</a></li>
+    <li><a href="#" data-filter=".cta, .bush">bush</a></li>
+    <li><a href="#" data-filter=".cta, .portrait">post</a></li>
+</ul>
 <div id="flower-holder">
-<div class="item" >
+<div class="item orchid" >
     <a href="assets/2391799205_020a417c3b.jpg"  ><img  src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/></a>
     <div class="caption">
             <div>lorem ipsum blah blah</div>
@@ -84,7 +104,7 @@
 <div class="item cta">
     You can add any message you want
 </div>
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -94,35 +114,13 @@
     </div>
 </div>
 
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
-    <a href="assets/2391819253_6882c7fd15.jpg">
-        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
-    </a>
-</div>
-
-
-<div class="item portrait">
-    <a href="assets/2391824483_a02f161141.jpg">
-        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
-    </a>
-    <div class="caption">
-            <div>lorem ipsum blah blah</div>
-            <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
-    </div>
-</div>
-<div class="item">
-    <a href="assets/2391799205_020a417c3b.jpg">
-        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
-    </a>
-</div>
-
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -138,19 +136,41 @@
             <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
     </div>
 </div>
+<div class="item orchid">
+    <a href="assets/2391799205_020a417c3b.jpg">
+        <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
+    </a>
+</div>
+
+<div class="item bush">
+    <a href="assets/2391819253_6882c7fd15.jpg">
+        <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
+    </a>
+</div>
+
+
+<div class="item portrait">
+    <a href="assets/2391824483_a02f161141.jpg">
+        <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
+    </a>
+    <div class="caption">
+            <div>lorem ipsum blah blah</div>
+            <div>lorem ipsum pro patriai blah blah blah blah blah blah</div>
+    </div>
+</div>
 
 <div class="item portrait">
     <a href="assets/2391824483_a02f161141.jpg">
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -161,13 +181,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -178,7 +198,7 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
@@ -186,7 +206,7 @@
 <div class="item cta second">
     You can add any message you want
 </div>
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -197,13 +217,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -214,13 +234,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -231,13 +251,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -248,13 +268,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -265,13 +285,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -282,13 +302,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
@@ -299,13 +319,13 @@
         <img src="assets/thumbnails/2391824483_a02f161141_t.jpg"/>
     </a>
 </div>
-<div class="item">
+<div class="item orchid">
     <a href="assets/2391799205_020a417c3b.jpg">
         <img src="assets/thumbnails/2391799205_020a417c3b_t.jpg"/>
     </a>
 </div>
 
-<div class="item">
+<div class="item bush">
     <a href="assets/2391819253_6882c7fd15.jpg">
         <img src="assets/thumbnails/2391819253_6882c7fd15_t.jpg"/>
     </a>
