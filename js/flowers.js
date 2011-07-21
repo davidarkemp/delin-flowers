@@ -117,7 +117,9 @@ jQuery.fn.loadImage = function(url) {
         $this.trigger("beforeLoadImage");
         var image = new Image();
         $(image).load(function() {
-            $this.trigger("imageLoaded",image);
+            setTimeout(function() {
+                $this.trigger("imageLoaded", image);}, 1000);
+
         });
         return image.src = url;
     });
@@ -231,7 +233,7 @@ function LayoutItem(node,manager) {
         return this.nodeId + " @(" + this.left + "," + this.top + ") #(" + this.right + "," + this.bottom + ")";
     };
 
-$(function() {
+$(document).load(function() {
 
     var imageQueueLength = 0;
     var $flowerHolder = $("#flower-holder").css("position", "relative");
@@ -397,10 +399,11 @@ $(function() {
 
         imageQueueLength += 1;
 
-        return $this.loadImage($this.find("a").get(0).href);
+        return $this.addClass("loading").loadImage($this.find("a").get(0).href);
     }
 
     function expandImage($container, newImage) {
+        $container.removeClass("loading");
         if(--imageQueueLength > 0) return;
 
         var $targetImage = $container.find("img");
