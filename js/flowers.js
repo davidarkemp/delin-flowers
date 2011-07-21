@@ -290,9 +290,10 @@ $(function() {
                 var $img = $(this);
                 var handler = function() {
                     $img.unbind('load').unbind('error');
-                    if(--imageCount == 0)
+                    if(--imageCount == 0) {
+                        window.layoutEngine = new LayoutEngine($flowerHolder, $items);
                         window.layoutEngine.layout();
-
+                    }
                 }
                 
                 $img.one("load", handler ).one("error", handler)
@@ -309,7 +310,7 @@ $(function() {
         return false;
     });
 
-    return window.layoutEngine = new LayoutEngine($flowerHolder, $items);
+    return;
 
     function LayoutEngine(container, items) {
         //noinspection UnnecessaryLocalVariableJS
