@@ -233,7 +233,7 @@ function LayoutItem(node,manager) {
         return this.nodeId + " @(" + this.left + "," + this.top + ") #(" + this.right + "," + this.bottom + ")";
     };
 
-$(document).load(function() {
+$(function() {
 
     var imageQueueLength = 0;
     var $flowerHolder = $("#flower-holder").css("position", "relative");
@@ -278,10 +278,24 @@ $(document).load(function() {
             action.apply($this);
         });
 
+    var imageCount = 0;
     var $items =
         $(".item", $flowerHolder)
             .each(function(i,e) {
                 e.id = "item" + i;
+            })
+        .find("img")
+        .each(function() {
+                ++imageCount
+                var $img = $(this);
+                var handler = function() {
+                    $img.unbind('load').unbind('error');
+                    if(--imageCount == 0)
+                        window.layoutEngine.layout();
+
+                }
+                
+                $img.one("load", handler ).one("error", handler)
             });
 
     $("#filter-menu").delegate("a", "click", function() {
@@ -295,8 +309,7 @@ $(document).load(function() {
         return false;
     });
 
-    window.layoutEngine = new LayoutEngine($flowerHolder, $items);
-    return window.layoutEngine.layout();
+    return window.layoutEngine = new LayoutEngine($flowerHolder, $items);
 
     function LayoutEngine(container, items) {
         //noinspection UnnecessaryLocalVariableJS
