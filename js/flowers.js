@@ -308,7 +308,7 @@ $(function() {
         this.reset = function() {
         
             this.maxWidth = this.$container.width();
-
+            this.rightmostPoint = undefined;
             this.layout = layout;
             this.leftOffset = 0;
         };
