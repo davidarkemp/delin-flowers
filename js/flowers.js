@@ -117,9 +117,7 @@ jQuery.fn.loadImage = function(url) {
         $this.trigger("beforeLoadImage");
         var image = new Image();
         $(image).load(function() {
-            setTimeout(function() {
-                $this.trigger("imageLoaded", image);}, 1000);
-
+            $this.trigger("imageLoaded", image);
         });
         return image.src = url;
     });
