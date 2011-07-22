@@ -283,8 +283,8 @@ $(function() {
         $(".item", $flowerHolder)
             .each(function(i,e) {
                 e.id = "item" + i;
-            })
-        .find("img")
+            });
+    $items.find("img")
         .each(function() {
                 ++imageCount
                 var $img = $(this);
