@@ -235,6 +235,7 @@ $(function() {
 
     var imageQueueLength = 0;
     var $flowerHolder = $("#flower-holder").css("position", "relative");
+    var layoutManager = { layout: function() {}};
     $flowerHolder
         .delegate("div", "wantsResize", function(e,o,suspendLayout) {
 //            console.log("Wants Resize",o,suspendLayout)
@@ -289,22 +290,22 @@ $(function() {
                 var handler = function() {
                     $img.unbind('load').unbind('error');
                     if(--imageCount == 0) {
-                        window.layoutEngine = new LayoutEngine($flowerHolder, $items);
-                        window.layoutEngine.layout();
+                        layoutManager = new LayoutEngine($flowerHolder, $items);
+                        layoutManager.layout();
                     }
                 }
                 
                 $img.one("load", handler ).one("error", handler)
             });
 
-    $("#filter-menu").delegate("a", "click", function() {
-        var filter = $(this).data("filter");
+    $("#filter-menu").change(function() {
+        var filter = $(this).val();
         console.log("filter", filter);
         $flowerHolder.find(".item")
             .filter(filter).filter(":hidden").show().end().end()
             .filter(":not("+filter+")").filter(":visible").hide();
             
-        window.layoutEngine.layout(true);
+        layoutManager.layout(true);
         return false;
     });
 
@@ -321,10 +322,10 @@ $(function() {
 
         this.reset = function() {
         
-            this.maxWidth = this.$container.width();
-            this.rightmostPoint = undefined;
-            this.layout = layout;
-            this.leftOffset = 0;
+            self.maxWidth = this.$container.width();
+            self.rightmostPoint = undefined;
+            self.layout = layout;
+            self.leftOffset = 0;
         };
 
         this.reset();
