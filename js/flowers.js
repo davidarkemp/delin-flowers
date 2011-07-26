@@ -293,9 +293,10 @@ $(function() {
                         layoutManager = new LayoutEngine($flowerHolder, $items);
                         layoutManager.layout();
                     }
-                }
+                };
                 
-                $img.one("load", handler ).one("error", handler)
+                $img.one("load", handler ).one("error", handler);
+                if(this.complete) setTimeout(function() { $img.trigger("load"); },0);
             });
 
     $("#filter-menu").change(function() {
