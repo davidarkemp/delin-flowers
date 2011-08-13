@@ -101,14 +101,10 @@ Size.prototype.isSmallerThan = function(other) {
 };
 
 jQuery.fn.resizeTo = function(newWidth, newHeight, suspendLayout) {
-//    console.log("resizeTo",newWidth,newHeight,suspendLayout);
     var oldSize = new Size(this.width(), this.height());
     var newSize = new Size(newWidth, newHeight);
     var parameters = { oldSize: oldSize, newSize: newSize };
     this.trigger("wantsResize", [parameters, suspendLayout]);
-    /*return this.animate( { width: newWidth, height: newHeight }, function() {
-      $(this).trigger("afterResize", parameters);
-    });*/
 };
 
 jQuery.fn.loadImage = function(url) {
@@ -238,7 +234,6 @@ $(function() {
     var layoutManager = { layout: function() {}};
     $flowerHolder
         .delegate("div", "wantsResize", function(e,o,suspendLayout) {
-//            console.log("Wants Resize",o,suspendLayout)
             var eventName =
                 o.oldSize.isSmallerThan(o.newSize)
                     ? "wantsToGrow"
@@ -258,11 +253,16 @@ $(function() {
                 eventName = null;
             }
 
-//            console.log("resized",o.newSize,o.oldSize,eventName);
             if(!eventName) return;
                 $(this).trigger(eventName);
         })
-        .delegate("div", "afterGrow", function() { $(this).addClass("large"); })
+        .delegate("div", "afterGrow", function() {
+            var $this = $(this);
+            $this.addClass("large");
+            var offset = $this.offset();
+            var scrollOffset = Math.max(($(document.body).height() - $this.height())/2, 0);
+            $("html:not(:animated),body:not(:animated)").animate({ scrollTop: offset.top - scrollOffset }, 500);
+        })
         .delegate("div", "afterShrink", function() { $(this).removeClass("large")})
         .delegate("div:has(img)", "click", function(e) {
             e.preventDefault();
@@ -301,7 +301,6 @@ $(function() {
 
     $("#filter-menu").change(function() {
         var filter = $(this).val();
-        console.log("filter", filter);
         $flowerHolder.find(".item")
             .filter(filter).filter(":hidden").show().end().end()
             .filter(":not("+filter+")").filter(":visible").hide();
@@ -332,7 +331,7 @@ $(function() {
         this.reset();
 
         var resizeHandler = _.debounce(function() {
-            console.log("window resized");
+
             self.reset();
             self.layout(true);
         },500);
@@ -341,7 +340,6 @@ $(function() {
 
         function layout(animate, fixedSize){
 
-//            console.log("layout")
             fixedSize = fixedSize || [];
 
             var minItemWidth = _.min(_.map(this.items, function(item) { return item.width; }));
@@ -392,7 +390,6 @@ $(function() {
             }
 
             if(typeof self.rightmostPoint === "undefined") {
-//                console.log("adjusting")
                 self.rightmostPoint = _.max(_.map(toLayout, function(i) { return i.right }));
                 self.leftOffset = Math.floor((self.maxWidth - self.rightmostPoint) / 2);
                 if(self.leftOffset)
@@ -448,7 +445,6 @@ $(function() {
     }
 
     function hideImage(suspendLayout) {
-//        console.log("hideImage",suspendLayout);
         var $this = $(this);
 
         var size = $this.data("size");
@@ -458,7 +454,6 @@ $(function() {
         var $targetImage = $this.find("img");
 
         $this.one("resized", function() {
-//            console.log("resized",$this.get(0).id)
             $targetImage.attr("src", $this.data("thumbnail"))
                 .css(new Size(newWidth, newHeight));
         });
